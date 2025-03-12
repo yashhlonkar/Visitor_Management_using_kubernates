@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: <your-docker-hub-username>/mysql:latest  # Replace with your MySQL image
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "rootpassword"  # MySQL root password
+            - name: MYSQL_DATABASE
+              value: "visitor_management"  # MySQL database name
+            - name: MYSQL_USER
+              value: "root"  # MySQL username
+            - name: MYSQL_PASSWORD
+              value: "rootpassword"  # MySQL password
+          ports:
+            - containerPort: 3306

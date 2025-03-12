@@ -1,0 +1,48 @@
+
+
+
+sudo yum install -y docker
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker ex2-user
+
+
+sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d '"' -f 4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+
+
+docker build -t student-management-app .
+docker-compose up --build
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 992382543428.dkr.ecr.us-east-1.amazonaws.com
+
+aws ecr create-repository --repository-name php-app --region us-east-1
+aws ecr create-repository --repository-name mysql-db --region us-east-1
+
+
+docker tag student-app-php:latest 992382543428.dkr.ecr.us-east-1.amazonaws.com/php-app:latest
+docker tag student-app-db:latest 992382543428.dkr.ecr.us-east-1.amazonaws.com/mysql-db:latest
+
+
+docker push 992382543428.dkr.ecr.us-east-1.amazonaws.com/php-app:latest
+docker push 992382543428.dkr.ecr.us-east-1.amazonaws.com/mysql-db:latest
+
+
+
+
+
+
+Create Deployment and Service for MySQL:
+
+kubectl apply -f mysql-deployment.yaml
+kubectl apply -f mysql-service.yaml
+
+
+
+
+
+Create Deployment and Service for PHP App:
+
+kubectl apply -f php-app-deployment.yaml
+kubectl apply -f php-app-service.yaml
